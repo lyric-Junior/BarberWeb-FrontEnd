@@ -51,7 +51,8 @@ function Login() {
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
       localStorage.setItem('username', data.username);
-      localStorage.setItem('')
+      localStorage.setItem('numero', data.numero);
+      localStorage.setItem('userId', data.userId)
 
       navigate('/panel')
     } catch (err) {
@@ -98,7 +99,10 @@ function Login() {
         transition={{ duration: 0.4 }}
         className="min-h-screen bg-linear-to-br from-violet-700 via-blue-600 to-black flex justify-center items-center"
       >
-          <div className='absolute loadingCircle'></div>
+          <div className='loadingCircle'></div>
+          <div className='loadingCircleMinor'></div>
+          <div className='loadingCircleMajor'></div>
+          <div className='loadingCircleReverse'></div>
           
           <div className='text-white text-3xl translate-y-50'>Loading...</div>
       </motion.div>
