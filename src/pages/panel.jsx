@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import Home from '../views/date'
-import Summary from '../views/summary'
+import Home from '../views/panel/date'
+import Summary from '../views/panel/summary'
 
 export default function Panel() {
 
@@ -15,11 +15,7 @@ export default function Panel() {
     })
 
 
-const [view, setView] = useState("home");
+const [view, setView] = useState("panel");
 
-    return (
-        <div className="">
-
-        </div>
-    );
+    
 }
