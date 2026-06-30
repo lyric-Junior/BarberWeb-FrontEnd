@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
-import Home from '../views/panel/date'
 import Summary from '../views/panel/summary'
+import Date from '../views/panel/date'
+import Professional from '../views/panel/professional'
 
 export default function Panel() {
 
@@ -14,8 +15,39 @@ export default function Panel() {
         }
     })
 
+    const [schedule, setSchedule] = useState({
+        selectedDay:'',
+        time:'',
+        scheduleId:'',
+        professionalId:'',
+        servicos:''
+    })
 
-const [view, setView] = useState("panel");
 
+const [view, setView] = useState(1);
+
+switch (view) {
+    case 1:
+        return <Date 
+            schedule={schedule}
+            setSchedule={setSchedule}
+            setView={setView}
+        />
+    case 2:
+        return <Professional 
+            schedule={schedule}
+            setSchedule={setSchedule}
+            setView={setView}
+        />
+    case 3:
+        return <Summary 
+            schedule={schedule}
+            setSchedule={setSchedule}
+            setView={setView}
+        />
+        
+}
+
+setView(1);
     
 }

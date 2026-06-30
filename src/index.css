@@ -1,47 +1,65 @@
-@import 'tailwindcss';
+/*    Loading block
+  ==============================================================*/
+@import "tailwindcss";
 
 /*==============================================================
-    Loading block
-  ==============================================================*/
-.loadingCircle {
-  width: 50px;
-  height: 200px;
-  border: 4px solid rgb(200, 0, 200);
-  border-radius: 50%;
+    Loading
+==============================================================*/
+
+.loadingContainer {
+  position: relative;
+  width: 220px;
+  height: 220px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingCircle,
+.loadingCircleMinor,
+.loadingCircleMajor,
+.loadingCircleReverse {
   position: absolute;
-  animation: loadingAnimation 1.5s linear infinite;
+  border-radius: 50%;
+  border: 3px solid;
+  border-color: rgb(168 85 247 / .85);
+  box-shadow:
+    0 0 18px rgb(168 85 247 / .25),
+    inset 0 0 10px rgb(168 85 247 / .15);
+
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.loadingCircle {
+  width: 140px;
+  height: 140px;
+  animation: loadingRotate 2.2s infinite;
 }
 
 .loadingCircleMinor {
-  width: 50px;
-  height: 150px;
-  position: absolute;
-  border: 4px solid rgb(200, 0, 200);
-  border-radius: 50%;
-  animation: loadingAnimation 1s linear infinite;
+  width: 110px;
+  height: 170px;
+  border-color: rgb(196 181 253 / .8);
+  animation: loadingRotate 1.6s reverse infinite;
 }
 
 .loadingCircleMajor {
-  width: 50px;
-  height: 250px;
-  position: absolute;
-  border: 4px solid rgb(200, 0, 200);
-
-  border-radius: 50%;
-
-  animation: loadingAnimation 2s linear infinite;
+  width: 180px;
+  height: 110px;
+  border-color: rgb(139 92 246 / .8);
+  animation: loadingRotate 2.8s infinite;
 }
 
 .loadingCircleReverse {
-  width: 50px;
+  width: 200px;
   height: 200px;
-  border: 4px solid rgb(200, 0, 200);
-  border-radius: 50%;
-  position: absolute;
-  animation: loadingAnimation 1.5s reverse infinite;
+  border-color: rgb(124 58 237 / .45);
+  animation: loadingRotate 4s reverse infinite;
 }
 
-@keyframes loadingAnimation {
+@keyframes loadingRotate {
   from {
     transform: rotate(0deg);
   }

@@ -92,20 +92,27 @@ function Login() {
   <AnimatePresence mode="wait">
     {isLoadingMain ? (
       <motion.div
-        key="loading"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.4 }}
-        className="min-h-screen bg-linear-to-br from-violet-700 via-blue-600 to-black flex justify-center items-center"
-      >
-          <div className='loadingCircle'></div>
-          <div className='loadingCircleMinor'></div>
-          <div className='loadingCircleMajor'></div>
-          <div className='loadingCircleReverse'></div>
-          
-          <div className='text-white text-3xl translate-y-50'>Loading...</div>
-      </motion.div>
+  key="loading"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 0 }}
+  transition={{ duration: 0.4 }}
+  className="min-h-screen bg-linearX         -to-br from-violet-700 via-indigo-700 to-black flex flex-col justify-center items-center"
+>
+  <div className="loadingContainer">
+    <div className="loadingCircle"></div>
+    <div className="loadingCircleMinor"></div>
+    <div className="loadingCircleMajor"></div>
+    <div className="loadingCircleReverse"></div>
+
+    {/* Núcleo */}
+    <div className="w-4 h-4 rounded-full bg-violet-300 shadow-[0_0_30px_#c084fc]"></div>
+  </div>
+
+  <h1 className="mt-10 text-3xl font-semibold tracking-widest text-violet-100">
+    Loading...
+  </h1>
+</motion.div>
     ) : (
       <motion.div
         key="auth"
