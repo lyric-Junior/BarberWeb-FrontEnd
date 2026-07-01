@@ -8,18 +8,22 @@ export default function SelectSchedule({ schedule, setSchedule,setView }) {
 
     const [error, setError] = useState("");
 
-    const today = new Date()
-            .toISOString()
-            .split("T")[0];
+   const today = new Date();
+
+   //Today and Tomorrow consts
+    const todayDate = today.toISOString().split("T")[0];
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowDate = tomorrow.toISOString().split("T")[0];
 
     function selectToday() {
 
         setSchedule(prev => ({
             ...prev,
-            date: today.toISOString().split("T")[0]
+            date: todayDate
         }));
 
-        console.log(today)
+        console.log(todayDate)
 
     }
 
@@ -27,10 +31,11 @@ export default function SelectSchedule({ schedule, setSchedule,setView }) {
 
         setSchedule(prev => ({
             ...prev,
-            date: tomorrow.toISOString().split("T")[0]
+            date: tomorrowDate 
         }));
 
     }
+    console.log(tomorrowDate)
 useEffect(() => {
     const loadTimes = async () => {
             setLoading(true);
