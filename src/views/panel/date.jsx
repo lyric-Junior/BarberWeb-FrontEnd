@@ -5,6 +5,8 @@ export default function SelectSchedule({ schedule, setSchedule,setView }) {
 
     const [loading, setLoading] = useState(true);
     const [horarios, setHorarios] = useState([]);
+    const [selectedDay, setSelectedDay] = useState('');
+    const [selectedTime, setSelectedTime] = useState('');
 
     const [error, setError] = useState("");
 
@@ -35,13 +37,49 @@ export default function SelectSchedule({ schedule, setSchedule,setView }) {
         }));
 
     }
-    console.log(tomorrowDate)
-useEffect(() => {
-    const loadTimes = async () => {
+    console.log(tomorrowDate);
+    console.log(todayDate);
+
+const loadTimes = async (day) => {
             setLoading(true);
             const accessToken = localStorage.getItem('accessToken');
             try {
-                const response = await fetch(`http://localhost:6050/user/listarHorariosDisponiveis?data=${schedule.selectedDay}`, {
+                const response = await fetch('http://localhost:6050/user/listarHorariosDisponiveis?data=' + day, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type':'application/json',
+                        'Authorization': 'Bearer ' + accessToken
+                    }
+                })
+
+                const data = await response.json();
+
+                //Empty array validation error
+                if (data.length === 0) {
+                    setError(`Não existem horários disponíveis para ${selectedDay}.`);
+                } else {
+                    setError("");
+                }
+
+                setHorarios(data);
+
+            }catch(err) {
+                setError(err.message || "Bad request")
+            }finally {
+                setLoading(false);
+            }
+        }
+
+useEffect(() => {
+    const loadTimes = async () => {
+            setLoading(true);
+            setSchedule(prev => ({
+                ...prev,
+                selectedDay: todayDate
+            }))
+            const accessToken = localStorage.getItem('accessToken');
+            try {
+                const response = await fetch('http://localhost:6050/user/listarHorariosDisponiveis?data=' + todayDate, {
                     method: 'GET',
                     headers: {
                         'Content-Type':'application/json',
@@ -61,9 +99,6 @@ useEffect(() => {
         }
         loadTimes();
 }, [])
-    
-
-        setView(1);
 
     return (
 
@@ -124,14 +159,19 @@ useEffect(() => {
 
                             <button
 
-                                onClick={selectToday(), loadTimes()}
+                                onClick={() => {
+                                    loadTimes(todayDate);
+                                    setSelectedDay(todayDate);
+                                    setSchedule(prev => ({
+                                        ...prev,
+                                        selectedDay: selectedDay
+                                    }))
+                                }}
 
                                 className={`flex-1 py-4 rounded-xl transition font-semibold
 
                                     ${
-                                        schedule(prev => ({
-                                            ...prev,
-                                        }))
+                                        todayDate == schedule.selectedDay
                                             
                                             ? "bg-violet-600 text-white"
 
@@ -146,12 +186,19 @@ useEffect(() => {
 
                             <button
 
-                                onClick={selectTomorrow(), loadTimes()}
+                                onClick={() => {
+                                    loadTimes(tomorrowDate);
+                                    setSelectedDay(tomorrowDate);
+                                    setSchedule(prev => ({
+                                        ...prev,
+                                        selectedDay: selectedDay
+                                    }))
+                                }}
 
                                 className={`flex-1 py-4 rounded-xl transition font-semibold
 
                                     ${
-                                        selectedDay === "tomorrow"
+                                        selectedDay === tomorrowDate
 
                                             ? "bg-violet-600 text-white"
 
@@ -168,45 +215,58 @@ useEffect(() => {
 
                         <div className="mt-8 h-80 overflow-y-auto rounded-2xl bg-black/20 border border-violet-500/20">
 
-                            {horarios.map(hora => (
+                            <div
+    className="
+        h-72
+        overflow-y-auto
+        snap-y
+        snap-mandatory
+        scroll-smooth
+        rounded-2xl
+        bg-black/20
+        border border-violet-500/20
+    "
+>
 
-                                <motion.button
+    {horarios.length === 0 ? (
+        <div className="flex items-center justify-center h-full text-violet-200">
+            Nenhum horário disponível.
+        </div>
+    ) : (
+        horarios.map((hora) => (
+            <motion.button
+                key={hora}
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.02 }}
+                onClick={() => {
+                    setSelectedTime(hora);
 
-                                    whileHover={{ scale: 1.03 }}
+                    setSchedule(prev => ({
+                        ...prev,
+                        time: hora
+                    }));
+                }}
+                className={`
+                    snap-center
+                    w-full
+                    py-5
+                    text-xl
+                    transition-all
+                    duration-200
 
-                                    whileTap={{ scale: .97 }}
+                    ${
+                        selectedTime === hora
+                            ? "bg-violet-600 text-white font-bold shadow-lg"
+                            : "text-violet-100 hover:bg-violet-500/20"
+                    }
+                `}
+            >
+                {hora}
+            </motion.button>
+        ))
+    )}
 
-                                    key={hora}
-
-                                    onClick={setSchedule(prev => ({
-                                        ...prev,
-                                        date:hora
-                                    }))}
-
-                                    className={`
-                                        w-full
-                                        py-5
-                                        text-xl
-                                        transition-all
-                                        duration-200
-
-                                        ${
-                                            selectedTime === hora
-
-                                            ? "bg-violet-600 text-white font-bold shadow-lg"
-
-                                            : "text-violet-100 hover:bg-violet-500/20"
-
-                                        }
-
-                                    `}
-                                >
-
-                                    {hora}
-
-                                </motion.button>
-
-                            ))}
+</div>
 
                         </div>
 {error && (
@@ -224,7 +284,7 @@ useEffect(() => {
 
                             disabled={!selectedTime}
 
-                            onClick={setView(2)}
+                            onClick={() => setView(2)}
 
                             className="w-full mt-8 py-4 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:bg-violet-900 disabled:cursor-not-allowed text-white text-xl font-semibold"
 

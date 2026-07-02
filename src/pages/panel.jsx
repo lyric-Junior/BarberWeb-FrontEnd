@@ -24,7 +24,11 @@ export default function Panel() {
     })
 
 
-const [view, setView] = useState(1);
+const [view, setView] = useState();
+
+useEffect(() => {
+    setView(1);
+}, []);
 
 switch (view) {
     case 1:
@@ -46,8 +50,5 @@ switch (view) {
             setView={setView}
         />
         
-}
-
-setView(1);
-    
+}   
 }
