@@ -48,6 +48,7 @@ export default function Professional({
 
             const data = await response.json();
             setProfessionals(data);
+            setLoading(false)
 
         } catch (err) {
             if (err.status == 401) {
@@ -83,28 +84,6 @@ export default function Professional({
             <p className="text-violet-100 text-3xl mt-8 tracking-widest">
                 Carregando profissionais...
             </p>
-
-        </motion.div>
-
-    ) : error || professionals.length === 0 ? (
-
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="min-h-screen bg-linear-to-br from-violet-700 via-blue-600 to-black flex justify-center items-center px-6"
-        >
-
-            <div className="max-w-md w-full bg-red-500/20 border border-red-400/40 rounded-2xl p-8 text-center">
-
-                <h2 className="text-3xl font-bold text-red-200">
-                    Nenhum profissional disponível
-                </h2>
-
-                <p className="text-red-100 mt-4">
-                    Escolha outro horário para continuar.
-                </p>
-
-            </div>
 
         </motion.div>
 

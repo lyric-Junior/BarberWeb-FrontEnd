@@ -1,6 +1,6 @@
 import React from "react";
 
-export async function refreshRequest(url, options={}) {
+export async function refreshRequest() {
 
     const refreshToken = localStorage.getItem('refreshToken');
 
