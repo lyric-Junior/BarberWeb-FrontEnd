@@ -19,7 +19,7 @@ export default function Panel() {
         selectedDay:'',
         time:'',
         scheduleId:'',
-        professionalId:'',
+        professionalId:{},
         servicos:''
     })
 

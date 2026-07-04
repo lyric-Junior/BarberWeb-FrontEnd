@@ -10,16 +10,19 @@ export default function Professional({
 }) {
 
     const [professionals, setProfessionals] = useState([]);
-    const [selectedProfessional, setSelectedProfessional] = useState('');
+    const [selectedProfessional, setSelectedProfessional] = useState({});
+    const [selectedProfessionalId, setSelectedProfessionaId]=useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+
     const selectProfessional = (professional) => {
-    setSelectedProfessional(professional.id);
+    setSelectedProfessionalId(professional.id);
+    setSelectedProfessiona(professional);
 
     setSchedule(prev => ({
         ...prev,
-        professionalId: professional.id
+        professional: professional
     }));
 };
 
@@ -113,11 +116,11 @@ export default function Professional({
                             key={professional.id}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: .98 }}
-                            onClick={() => selectProfessional(professional)}
+                            onClick={() => selectProfessionalId(professional.id)}
                             className={`
                                 cursor-pointer rounded-2xl border transition-all duration-300 overflow-hidden
                                 ${
-                                    selectedProfessional === professional.id
+                                    selectedProfessionalId === professional.id
                                         ? "bg-violet-600 border-violet-300 shadow-2xl"
                                         : "bg-white/10 border-violet-400/20 hover:bg-violet-500/20"
                                 }
