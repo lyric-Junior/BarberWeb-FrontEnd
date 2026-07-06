@@ -54,7 +54,11 @@ function Login() {
       localStorage.setItem('numero', data.numero);
       localStorage.setItem('userId', data.userId)
 
-      navigate('/panel')
+      if (data.role === 'DEVELOPER' || data.role === 'ADMIN') {
+        navigate('/CPanel');
+      } else {
+        navigate('/panel')
+      }
     } catch (err) {
       setError(err.message);
       console.log(err.message);

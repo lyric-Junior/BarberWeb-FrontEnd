@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react";
+import { motion } from "framer-motion";
 
 export default function summary({
     schedule,
@@ -6,11 +7,12 @@ export default function summary({
     setView
 }) {
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setLoading] = useState(true);
     const [apointment, setAppointment] = useState({});
     const [error, setError] = useState(null);
     const [servicos, setServicos] = useState([]);
     const [selectedServices, setSelectedServices] = useState([]);
+    const [selectedProfessionalId, setSelectedProfessionalId] = useState('');
 
     const toggleService = (service) => {
 
@@ -32,6 +34,7 @@ export default function summary({
 
 }
 
+useEffect(()=> {
     const pickOneAppointment = async() => {
         const accessToken = localStorage.getItem('accessToken');
         try {
@@ -45,6 +48,7 @@ export default function summary({
 
             const data = await response.json();
 
+            console.log(data);
             setAppointment(data);
 
             setIsLoading(false);
@@ -52,6 +56,9 @@ export default function summary({
             setError(err.message || 'Internal server error!');
         }
     }
+
+    pickOneAppointment();
+    }, [])
 
     const confirmAppointment = async () => {
 
@@ -82,9 +89,29 @@ export default function summary({
         <div className="min-h-screen bg-linear-to-br from-violet-700 via-blue-600 to-black flex items-center justify-center p-6">
 
     {isLoading ? (
+<motion.div
+                    key="loading"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: .4 }}
+                    className="min-h-screen bg-linear-to-br from-violet-700 via-blue-600 to-black flex flex-col justify-center items-center"
+                >
 
-        <Loading />
+                    <div className="loadingContainer">
 
+                        <div className="loadingCircle"></div>
+                        <div className="loadingCircleMinor"></div>
+                        <div className="loadingCircleMajor"></div>
+                        <div className="loadingCircleReverse"></div>
+
+                    </div>
+
+                    <p className="text-violet-100 text-3xl mt-10 tracking-widest">
+                        Carregando horários...
+                    </p>
+
+                </motion.div>
     ) : (
 
         <div className="w-full max-w-5xl bg-black/40 backdrop-blur-xl rounded-3xl border border-violet-500 shadow-2xl p-8">
