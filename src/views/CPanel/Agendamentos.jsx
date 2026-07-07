@@ -1,9 +1,9 @@
 import React from "react";
 
-export default function schedules() {
+export default function Agendamentos() {
     return (
         <div>
-
+            
         </div>
     )
 }
