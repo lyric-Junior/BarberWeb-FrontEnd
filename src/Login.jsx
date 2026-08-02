@@ -82,9 +82,9 @@ function Login() {
 
       const data = await response.json();
 
-      isLogin(true);
+      setIsLogin(true);
     } catch (err) {
-      setError(err.message && err.status || 'Bad request!')
+      setError(err.message && err.status)
     } finally {
       setIsLoading(false);
     }
