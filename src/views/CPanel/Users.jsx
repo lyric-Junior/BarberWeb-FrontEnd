@@ -14,11 +14,18 @@ import {
 //Icons
 import { FaFilter, FaUser } from "react-icons/fa";
 
-//Sidebar import
-import Sidebar from './sidebar';
 import { FaMagnifyingGlass } from "react-icons/fa6";
 
-export default function Users({setView}) {
+export default function Users() {
+
+    const [editUserView, setEditUserView]=useState(false);
+    const [editUser, setEditUser]=useState({
+      id: String,
+      username: "",
+      numero: "",
+      email: "",
+      Role: ""
+    })
 
     const [users, setUsers]=useState([]);
     const [error, setError]=useState('');
@@ -30,15 +37,38 @@ export default function Users({setView}) {
 
     const open = Boolean(anchorEl);
 
-    const findUserById = async(e) => {
+    const findUserById = async(e, id) => {
         e.preventDefault();
         const accessToken = localStorage.getItem('accessToken');
         try {
-            const response = await fetch('http://localhost:6050/admin/findUserById')
+            const response = await fetch('http://localhost:6050/admin/findUserById?id=' + id,{
+              method:'GET',
+              headers:{
+                "Content-Type":"application/json",
+                "Authorization":"Bearer " + accessToken}
+            }
+            )
+
+            const data = await response.json();
+
+            setEditUser({
+              ...editUser,
+              id:data.id,
+              username: data.username,
+              numero: data.numero,
+              email: data.email,
+              role: data.role
+            });
+
+
         } catch(err) {
             setError(err.message);
         }
     }
+
+    useEffect(() => {
+      setInterval
+    })
 
     useEffect(() => {
         const handleUsers = async() => {
@@ -109,13 +139,7 @@ export default function Users({setView}) {
 };
 
     return (
-  <div className="flex min-h-screen bg-gray-100">
-    {/* Sidebar */}
-    <Sidebar setView={setView}/>
-
-    {/* Conteúdo Principal */}
     <div className="flex-1 p-8 ml-56">
-
       {/* Cabeçalho */}
       <motion.div
         initial={{ opacity: 0, x: -100 }}
@@ -236,7 +260,7 @@ export default function Users({setView}) {
             {users.length > 0 ? (
               users.map((user) => (
                 <tr
-                onClick={(e) => findUserById()}
+                onClick={(e) => findUserById(user.id)}
                   key={user.id}
                   className="border-b hover:bg-gray-100 transition-colors"
                 >
@@ -257,6 +281,19 @@ export default function Users({setView}) {
             )}
           </tbody>
         </table>
+        {editUserView ? (
+            <div className="absolute flex column justify-center align-middle h-full ">
+              <div className="w-6xl border">
+
+              </div>
+            </div>
+          ) : (
+            <div className="absolute hidden">
+              
+            </div>
+          )
+
+        }
       </motion.div>
 
       {error && (
@@ -265,6 +302,5 @@ export default function Users({setView}) {
         </p>
       )}
     </div>
-  </div>
-);
+  );
 }

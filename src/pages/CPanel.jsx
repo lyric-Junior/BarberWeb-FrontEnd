@@ -3,12 +3,13 @@ import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 //Views
-import Schedules from '../views/CPanel/Agendamentos';
-import Users from '../views/CPanel/Users';
+import Users from '../views/CPanel/Users.jsx';
 import Dashboard from '../views/CPanel/Dashboard';
 import Financeiro from '../views/CPanel/Financeiro';
 import Servicos from '../views/CPanel/Servicos';
 import Agendamentos from '../views/CPanel/Agendamentos';
+
+import Sidebar from '../views/CPanel/sidebar';
 
 export default function CPanel() {
 
@@ -16,7 +17,7 @@ export default function CPanel() {
     const [error, setError]=useState('');
 
     useEffect(() => {
-        setView(5);
+        setView(1);
     }, []);
 
     useEffect(() => {
@@ -40,18 +41,22 @@ export default function CPanel() {
             setError(err.message || 'Connection refused!')
         }
     }
+    
     }, [])
     
-    switch (view) {
-        case 1: 
-            return (<Agendamentos setView={setView}/>)
-        case 2:
-            return (<Dashboard setView={setView}/>)
-        case 3:
-            return (<Financeiro setView={setView}/>)
-        case 4:
-            return (<Servicos setView={setView}/>)
-        case 5:
-            return (<Users setView={setView}/>)
-    }
+        return (
+            <div className="flex">
+
+                <Sidebar setView={setView}/>
+
+                <div className='w-full'>
+                    {view === 1 && <Users />}
+                    {view === 2 && <Servicos/>}
+                    {view === 3 && <Agendamentos />}
+                    {view === 4 && <Dashboard />}
+                    {view === 5 && <Financeiro />}        
+                </div>
+            </div>
+
+        )
 }

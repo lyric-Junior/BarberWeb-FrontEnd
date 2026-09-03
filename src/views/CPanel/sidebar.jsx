@@ -74,7 +74,7 @@ export default function Sidebar({
                     </button>
 
                     <button
-                        onClick={() => setView(4)}
+                        onClick={() => setView(2)}
                         className="group flex items-center gap-3 w-full rounded-xl border border-violet-400/40 bg-white/10 backdrop-blur-md px-4 py-3 text-lg text-white shadow-lg transition-all duration-300 hover:bg-violet-600 hover:scale-105"
                     >
                         <FaHammer className="text-xl transition-transform group-hover:rotate-12" />
