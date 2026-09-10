@@ -17,12 +17,13 @@ export default function CPanel() {
     const [error, setError]=useState('');
 
     useEffect(() => {
-        setView(1);
-    }, []);
-
-    useEffect(() => {
-        const refreshToken = localStorage.getItem('refreshToken');
         const handleRefresh = async() => {
+            const refreshToken = localStorage.getItem('refreshToken');
+
+            if (!refreshToken) {
+            setError("Sessão expirada, faça login novamente!")
+        }
+        
         try {
             const response = await fetch('http://localhost:6050/auth/refresh', {
                 method: 'POST',
@@ -34,12 +35,27 @@ export default function CPanel() {
 
             const data = await response.json();
 
-            localStorage.setItem('accessToken', data.accessToken);
-            localStorage.setItem('refreshToken', data.refreshToken);
+            if (response.ok) {
+                localStorage.setItem('accessToken', data.accessToken);
+                localStorage.setItem('refreshToken', data.refreshToken);
+            } else if (!response.ok) {
+                //Não chame o refresh novamente!
+                localStorage.removeItem('accessToken')
+                localStorage.removeItem('refreshToken')
+                setError("Sessão expirada, faça login novamente!")
+            }
 
         } catch (err) {
             setError(err.message || 'Connection refused!')
         }
+    }
+    
+    handleRefresh();
+    const intervalo = setInterval(handleRefresh, 8 * 60 * 1000);
+    setView(1);
+
+    return () => {
+        clearInterval(intervalo);
     }
     
     }, [])
@@ -54,7 +70,7 @@ export default function CPanel() {
                     {view === 2 && <Servicos/>}
                     {view === 3 && <Agendamentos />}
                     {view === 4 && <Dashboard />}
-                    {view === 5 && <Financeiro />}        
+                    {view === 5 && <Financeiro />}     
                 </div>
             </div>
 
