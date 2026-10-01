@@ -7,10 +7,11 @@ export default function Servicos() {
     const [isLoading, setIsLoading]=useState('');
 
     return (
-        <div className="flex-1 min-h-screen">
+        <div className="flex">
+            <div className="">
 
-            <Sidebar setView={setView}/>
-            
-        </div>    
+            </div>
+
+        </div>  
     )
 }

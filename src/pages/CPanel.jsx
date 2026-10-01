@@ -11,10 +11,15 @@ import Agendamentos from '../views/CPanel/Agendamentos';
 
 import Sidebar from '../views/CPanel/sidebar';
 
+import { FaArrowLeft } from 'react-icons/fa'
+import SidebarButton from '../views/CPanel/components/sidebarButton.jsx';
+
 export default function CPanel() {
 
+    const [hideSidebar, setHideSidebar]=useState(false);
     const [view, setView]=useState();
     const [error, setError]=useState('');
+    const [isMobile, setIsMobile]=useState(window.innerWidth < 768)
 
     useEffect(() => {
         const handleRefresh = async() => {
@@ -59,13 +64,13 @@ export default function CPanel() {
     }
     
     }, [])
-    
         return (
-            <div className="flex">
+            <div className="flex justify-around">
+                    <SidebarButton hideSidebar={hideSidebar}/>
+                    <Sidebar setView={setView}/>
 
-                <Sidebar setView={setView}/>
-
-                <div className='w-full'>
+                
+                <div className='w-full justify-center'>
                     {view === 1 && <Users />}
                     {view === 2 && <Servicos/>}
                     {view === 3 && <Agendamentos />}

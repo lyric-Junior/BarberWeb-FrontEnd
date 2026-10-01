@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 //Icons Fa
-import { FaUser, FaHammer, FaDatabase, FaPen, FaArrowLeft } from "react-icons/fa";
+import { FaUser, FaHammer, FaDatabase, FaPen } from "react-icons/fa";
 //Icons Hi
 import { HiArrowLeft ,HiClipboardList } from "react-icons/hi";
 //Images
@@ -14,7 +14,6 @@ export default function Sidebar({
 
     const [loading, setLoading]=useState(true);
     const [error, setError]=useState('');
-    const [isVisible, setVisible]=useState(true)
 
     const navigate = useNavigate();
 
@@ -37,7 +36,6 @@ export default function Sidebar({
 
     return (
         <>
-    {isVisible && (
         <motion.div
             id="CPanelSidebar"
             key="CPanelSidebar"
@@ -45,13 +43,8 @@ export default function Sidebar({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -200 }}
             transition={{ duration: 0.4 }}
-            className="left-0 fixed"
+            className="left-0 relative"
         >
-            <FaArrowLeft
-                size={28}
-                className="absolute ml-3 mt-3 text-white border p-2 rounded-full hover:bg-white hover:text-violet-700 shadow transition-all cursor-pointer"
-                onClick={setVisible(true)}
-            />
 
             <div className="min-h-screen w-56 bg-linear-to-br from-violet-800 via-blue-700 to-slate-900 flex flex-col items-center py-6 px-4">
 
@@ -117,7 +110,6 @@ export default function Sidebar({
 
             </div>
         </motion.div>
-    )}
 </>
     )
 }
