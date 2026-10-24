@@ -12,7 +12,7 @@ export async function refreshRequest() {
     }
     try {
 
-    const response = await fetch(`http://localhost:6050/auth/refresh`, {
+    const response = await fetch(import.meta.env.VITE_APP_BASE_URL + "/auth/refresh", {
 
         method:`POST`,
         headers: {

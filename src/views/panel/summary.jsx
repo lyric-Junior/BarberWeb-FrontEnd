@@ -8,7 +8,7 @@ export default function summary({
 }) {
 
     const [isLoading, setLoading] = useState(true);
-    const [apointment, setAppointment] = useState({});
+    const [appointment, setAppointment] = useState({});
     const [error, setError] = useState(null);
     const [servicos, setServicos] = useState([]);
     const [selectedServices, setSelectedServices] = useState([]);

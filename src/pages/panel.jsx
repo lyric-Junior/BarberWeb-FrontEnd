@@ -9,11 +9,49 @@ export default function Panel() {
     const [isLoading, setIsLoading]=useState(true);
 
     useEffect(() => {
-        const refresh = async() => {
-            
-            const result = await refresh();
+        const handleRefresh = async () => {
+            const refreshToken = localStorage.getItem('refreshToken');
+
+            if (!refreshToken) {
+                setError("Sessão expirada, faça login novamente!")
+            }
+
+            try {
+                const response = await fetch(
+                    import.meta.env.VITE_APP_BASE_URL + "/auth/refresh", {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json',
+                        'X-Refresh-Token': refreshToken
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('accessToken', data.accessToken);
+                    localStorage.setItem('refreshToken', data.refreshToken);
+                } else if (!response.ok) {
+                    //Não chame o refresh novamente!
+                    localStorage.removeItem('accessToken')
+                    localStorage.removeItem('refreshToken')
+                    setError("Sessão expirada, faça login novamente!")
+                }
+
+            } catch (err) {
+                setError(err.message || 'Connection refused!')
+            }
         }
-    })
+
+        handleRefresh();
+        const intervalo = setInterval(handleRefresh, 8 * 60 * 1000);
+        setView(1);
+
+        return () => {
+            clearInterval(intervalo);
+        }
+
+    }, [])
 
     const [schedule, setSchedule] = useState({
         selectedDay:'',

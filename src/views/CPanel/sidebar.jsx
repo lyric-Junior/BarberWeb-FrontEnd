@@ -22,7 +22,7 @@ export default function Sidebar({
         const refreshToken = localStorage.getItem('refreshToken');
         const accessToken = localStorage.getItem('accessToken');
         try {
-            const response = await fetch(`http://localhost:6050/auth/logout`, {
+            const response = await fetch(import.meta.env.VITE_APP_BASE_URL + "/auth/logout", {
                 method: 'POST',
                 headers:{
                     'X-Refresh-Token': refreshToken,
@@ -43,7 +43,7 @@ export default function Sidebar({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -200 }}
             transition={{ duration: 0.4 }}
-            className="left-0 relative"
+            className="left-0 fixed"
         >
 
             <div className="min-h-screen w-56 bg-linear-to-br from-violet-800 via-blue-700 to-slate-900 flex flex-col items-center py-6 px-4">

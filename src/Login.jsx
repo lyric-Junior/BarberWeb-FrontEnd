@@ -1,9 +1,9 @@
-import React, {useState, useEffect } from 'react'
-import {AnimatePresence, motion} from 'framer-motion'
+import React, { useState, useEffect } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigate } from 'react-router'
 
 function Login() {
-  
+
   //Loadings
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMain, setIsLoadingMain] = useState(true);
@@ -12,6 +12,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [numero, setNumero] = useState('');
+  const [errorNumero, setErrorNumero] = useState('');
 
   //Login || Registro
   const [isLogin, setIsLogin] = useState(true);
@@ -21,24 +22,24 @@ function Login() {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   //Use navigate good enough
-  const navigate =  useNavigate();
-  
+  const navigate = useNavigate();
+
   //Loading screen before loginView ignoring DOMContentLoaded
   useEffect(() => {
-  const timer = setTimeout(() => {
-    setIsLoadingMain(false);
-  }, 2000);
+    const timer = setTimeout(() => {
+      setIsLoadingMain(false);
+    }, 2000);
 
-  return () => clearTimeout(timer);
+    return () => clearTimeout(timer);
   }, []);
 
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:6050/auth/login`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/auth/login`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({email, password})
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
       })
 
       if (!response.ok) {
@@ -67,13 +68,14 @@ function Login() {
     }
   }
 
-  const handleRegister = async() => {
+  const handleRegister = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:6050/auth/cadastrarUsuario`, {
+      const response = await fetch(
+        `${ import.meta.env.VITE_APP_BASE_URL } / auth / cadastrarUsuario`, {
         method: 'POST',
-        headers: {'Content-Type' : 'application/json'},
-        body: JSON.stringify({username, email, password, numero})
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password, numero })
       })
 
       if (!response.ok) {
@@ -90,180 +92,260 @@ function Login() {
     }
   }
 
+  const formatarTelefone = (valor) => {
+    const numeros = valor.replace(/\D/g, "").slice(0, 11);
+
+    if (numeros.length <= 2) {
+      return numeros.length ? `(${numeros}` : "";
+    }
+
+    if (numeros.length <= 6) {
+      return `(${numeros.slice(0, 2)}) ${numeros.slice(2)}`;
+    }
+
+    const ddd = numeros.slice(0, 2);
+    const separador = numeros.length === 11 ? 7 : 6;
+
+    return `(${ddd}) ${numeros.slice(2, separador)}-${numeros.slice(separador)}`;
+  };
+
+  //Telephone handling
+  const validarTelefone = (valor) => {
+    const numeros = valor.replace(/\D/g, "");
+
+    const dddsValidos = [
+      11, 12, 13, 14, 15, 16, 17, 18, 19,
+      21, 22, 24, 27, 28,
+      31, 32, 33, 34, 35, 37, 38,
+      41, 42, 43, 44, 45, 46, 47, 48, 49,
+      51, 53, 54, 55,
+      61, 62, 63, 64, 65, 66, 67, 68, 69,
+      71, 73, 74, 75, 77, 79,
+      81, 82, 83, 84, 85, 86, 87, 88, 89,
+      91, 92, 93, 94, 95, 96, 97, 98, 99,
+    ];
+
+    if (numeros.length !== 10 && numeros.length !== 11) {
+      return false;
+    }
+
+    const ddd = Number(numeros.slice(0, 2));
+    const assinante = numeros.slice(2);
+
+    if (!dddsValidos.includes(ddd)) {
+      return false;
+    }
+
+    // Celular: 9 dígitos, começando com 9.
+    if (numeros.length === 11) {
+      return /^9\d{8}$/.test(assinante);
+    }
+
+    // Telefone fixo: 8 dígitos, começando de 2 a 5.
+    return /^[2-5]\d{7}$/.test(assinante);
+  };
+
   return (
     <div>
       <>
-  <AnimatePresence mode="wait">
-    {isLoadingMain ? (
-      <motion.div
-  key="loading"
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  exit={{ opacity: 0 }}
-  transition={{ duration: 0.4 }}
-  className="min-h-screen bg-linearX         -to-br from-violet-700 via-indigo-700 to-black flex flex-col justify-center items-center"
->
-  <div className="loadingContainer">
-    <div className="loadingCircle"></div>
-    <div className="loadingCircleMinor"></div>
-    <div className="loadingCircleMajor"></div>
-    <div className="loadingCircleReverse"></div>
+        <AnimatePresence mode="wait">
+          {isLoadingMain ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="min-h-screen bg-linearX         -to-br from-violet-700 via-indigo-700 to-black flex flex-col justify-center items-center"
+            >
+              <div className="loadingContainer">
+                <div className="loadingCircle"></div>
+                <div className="loadingCircleMinor"></div>
+                <div className="loadingCircleMajor"></div>
+                <div className="loadingCircleReverse"></div>
 
-    {/* Núcleo */}
-    <div className="w-4 h-4 rounded-full bg-violet-300 shadow-[0_0_30px_#c084fc]"></div>
-  </div>
-
-  <h1 className="mt-10 text-3xl font-semibold tracking-widest text-violet-100">
-    Loading...
-  </h1>
-</motion.div>
-    ) : (
-      <motion.div
-        key="auth"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.4 }}
-        className="min-h-screen bg-linear-to-br from-violet-700 via-blue-700 to-black flex items-center justify-center px-4"
-      >
-        <motion.div
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          className="w-full max-w-md"
-        >
-          <div className="backdrop-blur-xl bg-black/30 border border-white/10 rounded-3xl shadow-2xl p-8">
-            <div className="mb-8 text-center">
-              <h1 className="text-4xl font-bold text-white">
-                {isLogin ? "Entrar" : "Criar Conta"}
-              </h1>
-
-              <p className="text-gray-300 mt-2">
-                {isLogin
-                  ? "Acesse sua conta"
-                  : "Cadastre-se para continuar"}
-              </p>
-            </div>
-
-            {error && (
-              <div className="mb-5 rounded-xl bg-red-500/20 border border-red-500/30 p-3 text-red-300 text-sm">
-                {error}
+                {/* Núcleo */}
+                <div className="w-4 h-4 rounded-full bg-violet-300 shadow-[0_0_30px_#c084fc]"></div>
               </div>
-            )}
 
-            <AnimatePresence mode="wait">
-              {isLogin ? (
-                <motion.div
-                  key="login"
-                  initial={{ opacity: 0, x: -15 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 15 }}
-                  transition={{ duration: 0.25 }}
-                  className="space-y-4"
-                >
-                  <input
-                    type="email"
-                    placeholder="E-mail"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-400 px-4 py-3 outline-none focus:border-blue-400"
-                  />
-
-                  <input
-                    type="password"
-                    placeholder="Senha"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-400 px-4 py-3 outline-none focus:border-blue-400"
-                  />
-
-                  <button
-                    disabled={isLoading}
-                    onClick={handleLogin}
-                    className="w-full py-3 rounded-xl bg-linear-to-r from-blue-600 to-violet-600 text-white font-semibold hover:scale-[1.02] transition-all disabled:opacity-50"
-                  >
-                    {isLoading ? "Entrando..." : "Entrar"}
-                  </button>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="register"
-                  initial={{ opacity: 0, x: 15 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -15 }}
-                  transition={{ duration: 0.25 }}
-                  className="space-y-4"
-                >
-                  <input
-                    type="text"
-                    placeholder="Usuário"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="w-full rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-400 px-4 py-3 outline-none focus:border-violet-400"
-                  />
-
-                  <input
-                    type="text"
-                    placeholder="Número"
-                    value={numero}
-                    onChange={(e) => setNumero(e.target.value)}
-                    className="w-full rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-400 px-4 py-3 outline-none focus:border-violet-400"
-                  />
-
-                  <input
-                    type="email"
-                    placeholder="E-mail"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-400 px-4 py-3 outline-none focus:border-violet-400"
-                  />
-
-                  <input
-                    type="password"
-                    placeholder="Senha"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-400 px-4 py-3 outline-none focus:border-violet-400"
-                  />
-
-                  <input
-                    type="password"
-                    placeholder="Confirmar senha"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-400 px-4 py-3 outline-none focus:border-violet-400"
-                  />
-
-                  <button
-                    disabled={isLoading}
-                    onClick={handleRegister}
-                    className="w-full py-3 rounded-xl bg-linear-to-r from-violet-600 to-blue-600 text-white font-semibold hover:scale-[1.02] transition-all disabled:opacity-50"
-                  >
-                    {isLoading ? "Criando conta..." : "Cadastrar"}
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div className="mt-8 text-center">
-              <button
-                onClick={() => {
-                  setError('');
-                  setIsLogin(!isLogin);
-                }}
-                className="text-blue-300 hover:text-white transition"
+              <h1 className="mt-10 text-3xl font-semibold tracking-widest text-violet-100">
+                Loading...
+              </h1>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="auth"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="min-h-screen bg-linear-to-br from-violet-700 via-blue-700 to-black flex items-center justify-center px-4"
+            >
+              <motion.div
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                className="w-full max-w-md"
               >
-                {isLogin
-                  ? "Não possui conta? Cadastre-se"
-                  : "Já possui conta? Entrar"}
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-    )}
-  </AnimatePresence>
-</>
+                <div className="backdrop-blur-xl bg-black/30 border border-white/10 rounded-3xl shadow-2xl p-8">
+                  <div className="mb-8 text-center">
+                    <h1 className="text-4xl font-bold text-white">
+                      {isLogin ? "Entrar" : "Criar Conta"}
+                    </h1>
+
+                    <p className="text-gray-300 mt-2">
+                      {isLogin
+                        ? "Acesse sua conta"
+                        : "Cadastre-se para continuar"}
+                    </p>
+                  </div>
+
+                  {error && (
+                    <div className="mb-5 rounded-xl bg-red-500/20 border border-red-500/30 p-3 text-red-300 text-sm">
+                      {error}
+                    </div>
+                  )}
+
+                  <AnimatePresence mode="wait">
+                    {isLogin ? (
+                      <motion.div
+                        key="login"
+                        initial={{ opacity: 0, x: -15 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 15 }}
+                        transition={{ duration: 0.25 }}
+                        className="space-y-4"
+                      >
+                        <input
+                          type="email"
+                          placeholder="E-mail"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-400 px-4 py-3 outline-none focus:border-blue-400"
+                        />
+
+                        <input
+                          type="password"
+                          placeholder="Senha"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-400 px-4 py-3 outline-none focus:border-blue-400"
+                        />
+
+                        <button
+                          disabled={isLoading}
+                          onClick={handleLogin}
+                          className="w-full py-3 rounded-xl bg-linear-to-r from-blue-600 to-violet-600 text-white font-semibold hover:scale-[1.02] transition-all disabled:opacity-50"
+                        >
+                          {isLoading ? "Entrando..." : "Entrar"}
+                        </button>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="register"
+                        initial={{ opacity: 0, x: 15 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -15 }}
+                        transition={{ duration: 0.25 }}
+                        className="space-y-4"
+                      >
+                        <input
+                          type="text"
+                          placeholder="Usuário"
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
+                          className="w-full rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-400 px-4 py-3 outline-none focus:border-violet-400"
+                        />
+
+                        <input
+                          type="tel"
+                          inputMode="numeric"
+                          autoComplete="tel-national"
+                          placeholder="(99) 99999-9999"
+                          value={formatarTelefone(numero)}
+                          onChange={(e) => {
+                            const digitos = e.target.value
+                              .replace(/\D/g, "")
+                              .slice(0, 11);
+
+                            setNumero(digitos);
+                            setErrorNumero("");
+                          }}
+
+                          onBlur={() => {
+                            if (numero.length > 0 && !validarTelefone(numero)) {
+                              setErrorNumero("Informe um telefone brasileiro válido.");
+                            }
+                          }}
+
+                          aria-invalid={Boolean(errorNumero)}
+
+                          className={`w-full rounded-xl bg-white/10 border text-white
+                            placeholder-gray-400 px-4 py-3 outline-none
+                            focus:border-violet-400 ${errorNumero ? "border-red-500" : "border-white/10"
+                            }`}
+                        />
+
+                        {errorNumero && (
+                          <p className="mt-1 text-sm text-red-400" role="alert">
+                            {errorNumero}
+                          </p>
+                        )}
+
+                        <input
+                          type="email"
+                          placeholder="E-mail"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="w-full rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-400 px-4 py-3 outline-none focus:border-violet-400"
+                        />
+
+                        <input
+                          type="password"
+                          placeholder="Senha"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-400 px-4 py-3 outline-none focus:border-violet-400"
+                        />
+
+                        <input
+                          type="password"
+                          placeholder="Confirmar senha"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          className="w-full rounded-xl bg-white/10 border border-white/10 text-white placeholder-gray-400 px-4 py-3 outline-none focus:border-violet-400"
+                        />
+
+                        <button
+                          disabled={isLoading}
+                          onClick={handleRegister}
+                          className="w-full py-3 rounded-xl bg-linear-to-r from-violet-600 to-blue-600 text-white font-semibold hover:scale-[1.02] transition-all disabled:opacity-50"
+                        >
+                          {isLoading ? "Criando conta..." : "Cadastrar"}
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <div className="mt-8 text-center">
+                    <button
+                      onClick={() => {
+                        setError('');
+                        setIsLogin(!isLogin);
+                      }}
+                      className="text-blue-300 hover:text-white transition"
+                    >
+                      {isLogin
+                        ? "Não possui conta? Cadastre-se"
+                        : "Já possui conta? Entrar"}
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </>
     </div>
   )
 }

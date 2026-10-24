@@ -30,7 +30,8 @@ export default function CPanel() {
         }
         
         try {
-            const response = await fetch('http://localhost:6050/auth/refresh', {
+            const response = await fetch(
+                import.meta.env.VITE_APP_BASE_URL + "/auth/refresh", {
                 method: 'POST',
                 headers: {
                     'Content-type':'application/json',
@@ -65,7 +66,7 @@ export default function CPanel() {
     
     }, [])
         return (
-            <div className="flex justify-around">
+            <div className="flex justify-around ml-56">
                     <SidebarButton hideSidebar={hideSidebar}/>
                     <Sidebar setView={setView}/>
 

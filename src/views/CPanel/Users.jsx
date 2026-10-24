@@ -80,7 +80,7 @@ export default function Users(setView) {
       }
 
       const response = await fetch(
-        `http://localhost:6050/admin/listarUsuariosComFiltro?${query.toString()}`,
+        import.meta.env.VITE_APP_BASE_URL + "/admin/listarUsuariosComFiltro?${query.toString()}",
         {
           method: "GET",
           headers: {
